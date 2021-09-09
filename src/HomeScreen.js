@@ -88,6 +88,8 @@ function HomeScreen(props) {
     const navigation = useNavigation()
 
     const fname = props.user.name.split(" ")[0]
+    
+    console.log(props.user.medications)
 
     return (
         <View style={styles.container}>

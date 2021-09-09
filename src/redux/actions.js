@@ -11,23 +11,6 @@ export const SIGN_UP_ERROR = 'SIGN_UP_ERROR'
 export const SIGN_IN_REQUEST = 'SIGN_IN_REQUEST'
 export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS'
 export const SIGN_IN_ERROR = 'SIGN_IN_ERROR'
-export const ADD_DEVICE = 'ADD_DEVICE'
-export const CLEAR_BLE = 'CLEAR_BLE'
-
-// Action creators
-export const addDevice = scannedDevice => ({
-    type: ADD_DEVICE,
-    payload: scannedDevice
-})
-
-export const clearBLE = () => ({
-    type: CLEAR_BLE
-})
-
-export const completeTest = id => ({
-    type: COMPLETE_TEST,
-    payload: id
-})
 
 // TODO: Combine signInUser and SignUpUser - many of the lines are identical
 export const signInUser = ({ email, password, onSuccess }) => async dispatch => {
