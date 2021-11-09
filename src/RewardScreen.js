@@ -12,12 +12,11 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux'
-import { useNavigation, NavigationContainer, StackActions } from "@react-navigation/native"
+import { useNavigation, NavigationContainer, StackActions, TabRouter } from "@react-navigation/native"
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
-
+import firestore from '@react-native-firebase/firestore';
 import {Svg, G, Circle} from 'react-native-svg'
-
 import styles from "./Styles"
 import Progbar from './components/Progbar';
 
@@ -32,8 +31,14 @@ getStreak = (medications) => {
     while (endLoop == false) {
         medications.map (medication =>{
             if(!(medication.intake.length == position)) {
-                const currentIntake = new Date(medication.intake[medication.intake.length-1-position].toMillis())
-                if(!(currentIntake.toDateString() == currentDay.toDateString())) {
+                if(medication.intake.length - 1 - position >= 0) {
+                    const currentIntake = new Date(medication.intake[medication.intake.length - 1 - position].toMillis())
+                    if(!(currentIntake.toDateString() == currentDay.toDateString())) {
+                        endLoop = true
+                        return
+                    }
+                }
+                else {
                     endLoop = true
                     return
                 }
@@ -73,8 +78,16 @@ function Voucher(props) {
 
 function RewardScreen(props) {
 
-    const streak = getStreak(props.user.medications)
-    
+    const [medications, setMedications] = useState(props.user.medications)
+
+    useEffect(() => {
+        firestore().collection('Users').doc(props.user.id).onSnapshot(snapshot => (
+            setMedications(snapshot.data().medications)
+        ));
+    }, [])
+
+    const streak = getStreak(medications)
+
     return(
 
         <View style={styles.container}>

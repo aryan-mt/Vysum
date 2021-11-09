@@ -16,6 +16,7 @@ import { connect } from 'react-redux'
 import { useNavigation, NavigationContainer, StackActions } from "@react-navigation/native"
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
+import firestore from '@react-native-firebase/firestore';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import moment from 'moment'
 
@@ -71,9 +72,17 @@ getStreak = (medications) => {
     while (endLoop == false) {
         medications.map(medication => {
             if (!(medication.intake.length == position)) {
-                const currentIntake = new Date(medication.intake[medication.intake.length - 1 - position].toMillis())
-                if (!(currentIntake.toDateString() == currentDay.toDateString())) {
+                if(medication.intake.length - 1 - position >= 0) {
+
+                    const currentIntake = new Date(medication.intake[medication.intake.length - 1 - position].toMillis())
+                    if (!(currentIntake.toDateString() == currentDay.toDateString())) {
+                        endLoop = true
+                        return
+                    }
+                }
+                else {
                     endLoop = true
+                    streak--
                     return
                 }
             }
@@ -83,15 +92,24 @@ getStreak = (medications) => {
         currentDay.setDate(currentDay.getDate() - 1)
 
     }
-    streak--
+    streak --
     return streak
 }
 
-
 function ProgressScreen(props) {
 
-    markedDates = getMarkedDates(timestampToDate(props.user.medications))
-    const streak = getStreak(props.user.medications)
+    const [medications, setMedications] = useState(props.user.medications)
+
+    useEffect(() => {
+        console.log(props.user.id)
+        firestore().collection('Users').doc(props.user.id).onSnapshot(snapshot => {
+            setMedications(snapshot.data().medications)
+        })
+        console.log("TESTING")
+    }, [])
+
+    const streak = getStreak(medications)
+    markedDates = getMarkedDates(timestampToDate(medications))
 
     return (
         <View style={styles.container}>
@@ -103,7 +121,7 @@ function ProgressScreen(props) {
                 <ScrollView style={{ margin: 10 }}>
                     <View style={{ alignItems:"center", flexDirection:"column", borderRadius:20, marginBottom: deviceHeight / 25}}>
                         <Text style={{ ...styles.medicineText, fontSize: 30, fontWeight: "700" }}>{streak} day streak</Text>
-                        <Text style={{ ...styles.medicineText, fontSize: 20, marginTop:16}}>You're doing awesome!</Text>
+                        {streak == 0 ? null : <Text style={{ ...styles.medicineText, fontSize: 20, marginTop:16}}>You're doing awesome!</Text>}
                     </View>
                         <Calendar
                             theme={

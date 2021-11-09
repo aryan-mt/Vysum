@@ -15,7 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from "@react-navigation/native"
 import 'react-native-gesture-handler';
 import moment from 'moment';
-
+import firestore from '@react-native-firebase/firestore';
 import { connect } from 'react-redux'
 
 import styles from "./Styles"
@@ -89,8 +89,14 @@ function HomeScreen(props) {
 
     const fname = props.user.name.split(" ")[0]
     
-    console.log(props.user.medications)
+    const [medications, setMedications] = useState(props.user.medications)
 
+    useEffect(() => {
+        firestore().collection('Users').doc(props.user.id).onSnapshot(snapshot => (
+            setMedications(snapshot.data().medications)
+        ));
+    }, [])
+    
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -99,7 +105,7 @@ function HomeScreen(props) {
             </View>
             <View style={styles.footer}>
                 <ScrollView>
-                    <Reminder medications={props.user.medications}></Reminder>
+                    <Reminder medications={medications}></Reminder>
                 </ScrollView>
             </View>
         </View>

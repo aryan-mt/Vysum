@@ -73,7 +73,7 @@ function LoginScreen(props) {
                             onPress={handleLoginPress}
                         >
                             <LinearGradient
-                                colors={["rgba(5, 16, 148, 1)", "rgba(5, 16, 148, 0.8)"]}
+                                colors={["rgba(0, 147, 115, 1)", "rgba(0, 147, 115, 0.8)"]}
                                 start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }}
                                 locations={[0, 0.9]}
                                 style={{
