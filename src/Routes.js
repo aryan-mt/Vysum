@@ -1,12 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import {
-    SafeAreaView,
     StyleSheet,
-    ScrollView,
-    View,
-    Text,
-    StatusBar,
-    Button,
     Image
 } from 'react-native';
 import { Provider } from 'react-redux'
@@ -106,7 +99,7 @@ function TabScreen() {
                         color = focused ? "#004b31" : "grey"
                         return (
                             <Image
-                                source={require("../assets/icons/med_icon.png")}
+                                source={require("../assets/icons/reward_icon.png")}
                                 style={{ height: 30, width: 30, tintColor: color }}
                             />
                         )
